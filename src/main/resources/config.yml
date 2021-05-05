@@ -10,6 +10,8 @@ config:
 # 'NONE' to disable. Permission assignment is still required for this to function. Price/Limit/Cooldowns are overidden for new player kits.
   death-kit: death
   sign-action: view
+# If true, kit overwrites players inventory.
+  overwrite: true
   currency-symbol: $
 messages:
   permission-denied: '&4You do not have permission!'

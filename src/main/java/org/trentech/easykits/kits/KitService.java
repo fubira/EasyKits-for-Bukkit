@@ -24,6 +24,10 @@ public class KitService {
 	public static KitService instance() {
 		return kitService;
 	}
+
+	public boolean overwrite() {
+		return true;
+	}
 	
 	public Optional<Kit> getKit(String name) {
 		return SQLKits.get(name);
@@ -91,13 +95,16 @@ public class KitService {
 				if(item == null){
 					item = new ItemStack(Material.AIR);
 				}
-				if(tempInv.getItem(index) == null){
+
+				if(overwrite()) {
+					tempInv.setItem(index, item);
+				}else if(tempInv.getItem(index) == null){
 					tempInv.setItem(index, item);
 				}else if(tempInv.firstEmpty() > -1){
-					tempInv.addItem(item);			
+					tempInv.addItem(item);
 				}else{
 					int amount = item.getAmount();
-					HashMap<Integer, ? extends ItemStack> matchItem = player.getInventory().all(item);				
+					HashMap<Integer, ? extends ItemStack> matchItem = player.getInventory().all(item);
 					int size = matchItem.size();
 					if(size < item.getMaxStackSize()){
 						size = item.getMaxStackSize() - size;
@@ -106,7 +113,7 @@ public class KitService {
 						}else{
 							Notifications notify = new Notifications("inventory-space", kit.getName(), player.getName());
 							player.sendMessage(notify.getMessage());
-							return false;					
+							return false;
 						}
 					}else{
 						for(int i = 10; i <= 36; i++){
@@ -117,7 +124,7 @@ public class KitService {
 							}
 							size = size - item.getMaxStackSize();
 							if(size < item.getMaxStackSize()){
-								if(amount <= size){					
+								if(amount <= size){
 									tempInv.setItem(index, item);
 								}
 							}
@@ -132,7 +139,9 @@ public class KitService {
 			index = 0;
 			for(ItemStack item : arm){
 				if(index == 0){
-					if(item != null){
+					if(overwrite()) {
+						tempArm.setItem(0, item);
+					}else if(item != null){
 						if(tempArm.getItem(0) == null){
 							tempArm.setItem(0, item);
 						}else if(tempInv.firstEmpty() > -1){
@@ -145,8 +154,10 @@ public class KitService {
 					}
 				}
 				if(index == 1){
-					if(item != null){
-						if(tempArm.getItem(1) == null){
+					if(overwrite()) {
+						tempArm.setItem(1, item);
+					}else  if(item != null){
+						if(tempArm.getItem(1) == null || overwrite()){
 							tempArm.setItem(1, item);
 						}else if(tempInv.firstEmpty() > -1){
 							tempInv.addItem(item);
@@ -158,8 +169,10 @@ public class KitService {
 					}
 				}
 				if(index == 2){
-					if(item != null){
-						if(tempArm.getItem(2) == null){
+					if(overwrite()) {
+						tempArm.setItem(2, item);
+					}else  if(item != null){
+						if(tempArm.getItem(2) == null || overwrite()){
 							tempArm.setItem(2, item);
 						}else if(tempInv.firstEmpty() > -1){
 							tempInv.addItem(item);
@@ -172,7 +185,9 @@ public class KitService {
 				}
 				if(index == 3){
 					if(item != null){
-						if(tempArm.getItem(3) == null){
+						if(overwrite()) {
+							tempArm.setItem(3, item);
+						}else if(tempArm.getItem(3) == null || overwrite()){
 							tempArm.setItem(3, item);
 						}else if(tempInv.firstEmpty() > -1){
 							tempInv.addItem(item);
@@ -193,16 +208,16 @@ public class KitService {
 
 			player.getInventory().setContents(tempInv.getContents());
 			
-			if(tempArm.getItem(0) != null){
+			if(tempArm.getItem(0) != null || overwrite()){
 				player.getInventory().setBoots(tempArm.getItem(0));
 			}
-			if(tempArm.getItem(1) != null){
+			if(tempArm.getItem(1) != null || overwrite()){
 				player.getInventory().setLeggings(tempArm.getItem(1));
 			}
-			if(tempArm.getItem(2) != null){
+			if(tempArm.getItem(2) != null || overwrite()){
 				player.getInventory().setChestplate(tempArm.getItem(2));
 			}
-			if(tempArm.getItem(3) != null){
+			if(tempArm.getItem(3) != null || overwrite()){
 				player.getInventory().setHelmet(tempArm.getItem(3));
 			}
 			return true;
